@@ -10,48 +10,74 @@ public class GameLoop {
         Scanner scn = new Scanner(System.in);
         Player p1 = new Player();
         Player p2 = new Player();
+        int scnSymbol = 0;
+        int scnRow;
+        int scnCol;
 
-        int symbol;
-        int row;
-        int col;
+        int NOUGHT = gameboard.NOUGHT;
+        int CROSS = gameboard.CROSS;
+
 
         System.out.println("Choose one of those numbers provided: 1)O or 2)X");
 
-        while (true){
+        while (scnSymbol != 1 && scnSymbol != 2){
             try{
-                symbol = scn.nextInt();
+                scnSymbol = scn.nextInt();
             } catch (InputMismatchException e){
-                String bad_input = scn.next();
+                scn.next();
                 System.out.println("Invalid input! Only the numbers 1 or 2 are valid! Try again.");
                 continue;
             }
+            if (scnSymbol == 1 || scnSymbol == 2){
+                continue;
+            } else {
+                System.out.println("Invalid number! Choose between 1 for O and 2 for X!");
+            }
+        }
 
-            if (symbol == 1 || symbol == 2){
-                p1.setSymbol(symbol);
-                gameboard.printBoard();
+        while (true){
+            p1.setSymbol(scnSymbol);
+            if (scnSymbol == NOUGHT){
+                p2.setSymbol(CROSS);
+            } else {
+                p2.setSymbol(NOUGHT);
+            }
+
+            if (gameboard.getPlayerTurn() % 2 == 1){
                 try{
-                    System.out.println("Player enter the row and column you want to place your symbol:");
+                    System.out.println("Player 1 enter the row and column you want to place your symbol:");
                     System.out.println("row:");
-                    row = scn.nextInt();
+                    scnRow = scn.nextInt();
                     System.out.println("col:");
-                    col = scn.nextInt();
+                    scnCol = scn.nextInt();
                 } catch (InputMismatchException e){
                     String bad_input = scn.next();
                     System.out.println("Invalid input! Try again.");
                     continue;
                 }
-                if (row >= 1 && row <=3  && col >= 1 && col <= 3){
-                    gameboard.set(p1, row, col);
+                if (scnRow >= 1 && scnRow <=3  && scnCol >= 1 && scnCol <= 3){
+                    gameboard.set(p1, scnRow, scnCol);
                     gameboard.printBoard();
+                    gameboard.setPlayerTurn(gameboard.getPlayerTurn()+1);
                 }
-
-            } else {
-                System.out.println("Invalid number! Choose between 1 for O and 2 for X!");
-                continue;
+            } else{
+                try{
+                    System.out.println("Player 2 enter the row and column you want to place your symbol:");
+                    System.out.println("row:");
+                    scnRow = scn.nextInt();
+                    System.out.println("col:");
+                    scnCol = scn.nextInt();
+                } catch (InputMismatchException e){
+                    String bad_input = scn.next();
+                    System.out.println("Invalid input! Try again.");
+                    continue;
+                }
+                if (scnRow >= 1 && scnRow <=3  && scnCol >= 1 && scnCol <= 3){
+                    gameboard.set(p2, scnRow, scnCol);
+                    gameboard.printBoard();
+                    gameboard.setPlayerTurn(gameboard.getPlayerTurn()+1);
+                }
             }
-
         }
-
-
     }
 }

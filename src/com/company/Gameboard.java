@@ -80,4 +80,12 @@ public class Gameboard {
     void reset(){
         //TODO setzt alles wieder auf Anfang.
     }
+
+    public int getPlayerTurn() {
+        return playerTurn;
+    }
+
+    public void setPlayerTurn(int playerTurn) {
+        this.playerTurn = playerTurn;
+    }
 }
