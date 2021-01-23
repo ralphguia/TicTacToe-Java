@@ -4,6 +4,7 @@ public class Player {
 
     private int symbol;
     private int victories;
+    private boolean isHuman;
 
     public int getSymbol() {
         return symbol;
@@ -19,5 +20,13 @@ public class Player {
 
     public void setVictories(int victories) {
         this.victories = victories;
+    }
+
+    public boolean isHuman() {
+        return isHuman;
+    }
+
+    public void setHuman(boolean human) {
+        isHuman = human;
     }
 }

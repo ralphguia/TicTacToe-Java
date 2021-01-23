@@ -1,6 +1,7 @@
 package com.company;
 
 import java.util.InputMismatchException;
+import java.util.Random;
 import java.util.Scanner;
 
 public class GameLoop {
@@ -14,8 +15,21 @@ public class GameLoop {
         int scnSymbol;
         int scnRow;
         int scnCol;
+        boolean scnIsHuman;
         int NOUGHT = gameboard.NOUGHT;
         int CROSS = gameboard.CROSS;
+
+        Random rand= new Random();
+
+        System.out.println("Type in 'true' for 2 player and 'false' for single player");
+        scnIsHuman =  scn.nextBoolean();
+        if (scnIsHuman){
+            p1.setHuman(true);
+            p2.setHuman(true);
+        } else {
+            p1.setHuman(false);
+            p2.setHuman(false);
+        }
 
         System.out.println("Choose one of those numbers provided: 1)'O' or 2)'X'");
         while (true) {
@@ -43,35 +57,78 @@ public class GameLoop {
             p2.setSymbol(NOUGHT);
         }
 
-        while (true) {
-            if (gameboard.getSymbolCounter() == 9){
-                System.out.println("Draw!");
-                if(gameboard.restartGameOrLeave(scn)){
-                    gameboard.printLeaderboard(p1,p2);
-                    break;
-                }
-            } else {
-                if (gameboard.getPlayerTurn() % 2 == 1) {
-                    System.out.println("Player 1 enter the row and column you want to place your symbol:");
-                    p = p1;
+        if (p1.isHuman()){
+            while (true) {
+                if (gameboard.getSymbolCounter() == 9){
+                    System.out.println("Draw!");
+                    if(gameboard.restartGameOrLeave(scn)){
+                        gameboard.printLeaderboard(p1,p2);
+                        break;
+                    }
                 } else {
-                    System.out.println("Player 2 enter the row and column you want to place your symbol:");
-                    p = p2;
-                }
+                    if (gameboard.getPlayerTurn() % 2 == 1) {
+                        System.out.println("Player 1 enter the row and column you want to place your symbol:");
+                        p = p1;
+                    } else {
+                        System.out.println("Player 2 enter the row and column you want to place your symbol:");
+                        p = p2;
+                    }
 
-                try {
-                    System.out.println("row:");
-                    scnRow = scn.nextInt();
-                    System.out.println("col:");
-                    scnCol = scn.nextInt();
-                } catch (InputMismatchException e) {
-                    scn.next();
-                    System.out.println("Invalid input! Try again.");
-                    continue;
+                    try {
+                        System.out.println("row:");
+                        scnRow = scn.nextInt();
+                        System.out.println("col:");
+                        scnCol = scn.nextInt();
+                    } catch (InputMismatchException e) {
+                        scn.next();
+                        System.out.println("Invalid input! Try again.");
+                        continue;
+                    }
+                    if (gameboard.gameplayWinOrLose(scn, p, scnRow, scnCol)){
+                        gameboard.printLeaderboard(p1,p2);
+                        break;
+                    }
                 }
-                if (gameboard.gameplayWinOrLose(scn, p, scnRow, scnCol)){
-                    gameboard.printLeaderboard(p1,p2);
-                    break;
+            }
+        } else {
+            while (true) {
+                if (gameboard.getSymbolCounter() == 9){
+                    System.out.println("Draw!");
+                    if(gameboard.restartGameOrLeave(scn)){
+                        gameboard.printLeaderboard(p1,p2);
+                        break;
+                    }
+                } else {
+                    if (gameboard.getPlayerTurn() % 2 == 1) {
+                        System.out.println("Player 1 enter the row and column you want to place your symbol:");
+                        p = p1;
+                        try {
+                            System.out.println("row:");
+                            scnRow = scn.nextInt();
+                            System.out.println("col:");
+                            scnCol = scn.nextInt();
+                        } catch (InputMismatchException e) {
+                            scn.next();
+                            System.out.println("Invalid input! Try again.");
+                            continue;
+                        }
+                        if (gameboard.gameplayWinOrLose(scn, p, scnRow, scnCol)){
+                            gameboard.printLeaderboard(p1,p2);
+                            break;
+                        }
+                    } else {
+                        System.out.println("Player 2 enter the row and column you want to place your symbol:");
+                        p = p2;
+                        int randomRow = rand.nextInt((3 - 1) + 1) + 1;
+                        int randomCol = rand.nextInt((3 - 1) + 1) + 1;
+                        //TODO 2.) KI-Upgrade: paste in the row & col, which are available
+                        //TODO 3.) KI_Upgrade: paste in the row & col, which are favorable and interrupt opponent
+
+                        if (gameboard.gameplayWinOrLose(scn, p, randomRow, randomCol)){
+                            gameboard.printLeaderboard(p1,p2);
+                            break;
+                        }
+                    }
                 }
             }
         }
