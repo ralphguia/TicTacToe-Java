@@ -46,7 +46,10 @@ public class GameLoop {
         while (true) {
             if (gameboard.getSymbolCounter() == 9){
                 System.out.println("Draw!");
-                gameboard.restartGameOrLeave(scn);
+                if(gameboard.restartGameOrLeave(scn)){
+                    gameboard.printLeaderboard(p1,p2);
+                    break;
+                }
             } else {
                 if (gameboard.getPlayerTurn() % 2 == 1) {
                     System.out.println("Player 1 enter the row and column you want to place your symbol:");

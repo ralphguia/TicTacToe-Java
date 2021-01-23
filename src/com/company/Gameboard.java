@@ -52,6 +52,7 @@ public class Gameboard {
     String checkField(int row, int col){ //check if one player can set a certain symbol onto a certain field (x,y)
         String message = "True";
 
+        System.out.println(logicBoard[row][col]);
         if (logicBoard[row][col] == NOUGHT || logicBoard[row][col] == CROSS) {
             return "There is already a symbol placed. Try again.";
         } else if (logicBoard[row][col] >= 1 && logicBoard[row][col] <= 3) {
@@ -108,11 +109,11 @@ public class Gameboard {
     }
 
     public boolean gameplayWinOrLose(Scanner scn, Player p, int scnRow, int scnCol) {
-        String fieldMessage = checkField(scnRow, scnCol);
-
         if (scnRow >= 1 && scnRow <= 3 && scnCol >= 1 && scnCol <= 3) {
             scnRow = boardRowAndColToVisualBoardConverter(scnRow);
             scnCol = boardRowAndColToVisualBoardConverter(scnCol);
+
+            String fieldMessage = checkField(scnRow, scnCol);
             if (fieldMessage.equals("True")) {
                 set(p, scnRow, scnCol);
                 printBoard();
@@ -120,7 +121,7 @@ public class Gameboard {
                 if (checkIfWon(p)) {
                     System.out.println("p" + p.getSymbol() + " won!");
                     p.setVictories(p.getVictories() + 1);
-                    restartGameOrLeave(scn);
+                    return restartGameOrLeave(scn);
                 }
             } else {
                 System.out.println(fieldMessage);
