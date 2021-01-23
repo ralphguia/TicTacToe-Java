@@ -63,7 +63,10 @@ public class GameLoop {
                 System.out.println("Invalid input! Try again.");
                 continue;
             }
-            if (gameboard.gameplay(scn, p, scnRow, scnCol)) break;
+            if (gameboard.gameplay(scn, p, scnRow, scnCol)){
+                gameboard.printLeaderboard(p1,p2);
+                break;
+            }
         }
     }
 }

@@ -5,16 +5,6 @@ public class Player {
     private int symbol;
     private int victories;
 
-    public int getName() {
-        return name;
-    }
-
-    public void setName(int name) {
-        this.name = name;
-    }
-
-    private int name;
-
     public int getSymbol() {
         return symbol;
     }

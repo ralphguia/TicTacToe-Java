@@ -34,27 +34,26 @@ public class Gameboard {
         }
     }
 
-    private int boardRowAndColConverter(int value){ //bigger board has to adapt with user input
+    private int boardRowAndColToVisualBoardConverter(int value){ //bigger board has to adapt with user input
         if (value == 1){
-            value = 1;
+            return value;
         }
         else if (value == 2){
-            value = 5;
+            return 5;
         }
         else if (value == 3){
-            value = 9;
+            return 9;
+        } else {
+            return value;
         }
-        return value;
     }
 
     String checkField(int row, int col){ //überprüft ob ein Player auf eine bestimmte Stelle (x,y) im Spielfeld setzen darf.
         String message = "True";
-        row = boardRowAndColConverter(row);
-        col = boardRowAndColConverter(col);
 
-        if (board[col][row] == NOUGHT || board[col][row] == CROSS) {
+        if (board[row][col] == NOUGHT || board[row][col] == CROSS) {
             return "There is already a symbol placed. Try again.";
-        } else if (board[col][row] >= 1 && board[col][row] <= 3) {
+        } else if (board[row][col] >= 1 && board[row][col] <= 3) {
             return "Please enter a valid number between 1 - 3";
         } else {
             return message;
@@ -62,9 +61,6 @@ public class Gameboard {
     }
 
     void set(Player p, int row, int col){ //setzt das entsprechende Zeichen des Spielers auf das Spielbrett.
-        row = boardRowAndColConverter(row);
-        col = boardRowAndColConverter(col);
-
         if (board[row][col] != NOUGHT && board[row][col] != CROSS){
             board[row][col] = p.getSymbol();
         }
@@ -94,7 +90,7 @@ public class Gameboard {
         }
     }
 
-    void reset(){  //TODO setzt alles wieder auf Anfang.
+    void reset(){
         for(int i = 0; i < board.length;i++){
             for(int j = 0; j < board.length;j++){
                 board[i][j] = EMPTY;
@@ -102,42 +98,44 @@ public class Gameboard {
         }
     }
 
+    void printLeaderboard(Player p1, Player p2){
+        System.out.println("+++++++++LEADERBOARD+++++++++");
+        System.out.println("Victories of p1: " + p1.getVictories());
+        System.out.println("Victories of p2: " + p2.getVictories());
+        System.out.println("+++++++++++++++++++++++++++++");
+    }
+
     public boolean gameplay(Scanner scn, Player p, int scnRow, int scnCol) {
         String scnReset;
+        String fieldMessage = checkField(scnRow, scnCol);
+        
         if (scnRow >= 1 && scnRow <= 3 && scnCol >= 1 && scnCol <= 3) {
-            String field = checkField(scnRow, scnCol);
-            if (field.equals("True")) {
+            scnRow = boardRowAndColToVisualBoardConverter(scnRow);
+            scnCol = boardRowAndColToVisualBoardConverter(scnCol);
+            if (fieldMessage.equals("True")) {
                 set(p, scnRow, scnCol);
                 printBoard();
                 setPlayerTurn(getPlayerTurn() + 1);
                 if (checkIfWon(p)) {
                     System.out.println("p" + p.getSymbol() + " won!");
                     p.setVictories(p.getVictories() + 1);
-                    System.out.println("Wanna play again? Type in y");
+                    System.out.println("Wanna play again? Type in 'y'");
                     scn.nextLine();
                     scnReset = scn.nextLine();
                     if (scnReset.equals("y")) {
                         reset();
                         printBoard();
                     } else {
-                        //printLeaderboard(p1, p2);
                         return true;
                     }
                 }
             } else {
-                System.out.println(field);
+                System.out.println(fieldMessage);
             }
         } else {
             System.out.println("--!!!--Please enter a valid number between 1 - 3--!!!--");
         }
         return false;
-    }
-
-    void printLeaderboard(Player p1, Player p2){
-        System.out.println("++++++++++VICTORIES++++++++++");
-        System.out.println("Victories of p1: " + p1.getVictories());
-        System.out.println("Victories of p2: " + p2.getVictories());
-        System.out.println("+++++++++++++++++++++++++++++");
     }
 
     public int getPlayerTurn() {
