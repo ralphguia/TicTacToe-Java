@@ -1,20 +1,16 @@
 package com.company;
 
-public class Gameboard {
+import java.util.Scanner;
 
-    final Integer ROWS = 11; //changed the initial size of 3 to 11 to increase the board
+public class Gameboard {
+    final Integer ROWS = 11;
     final Integer COLS = 11;
     final Integer EMPTY = 0;
     final Integer NOUGHT = 1;
     final Integer CROSS = 2;
     private final String[][] visualBoard = new String[ROWS][COLS];
-    private int[][] board = new int[ROWS][COLS];
-    private int playerTurn = 1;//if ungerade player one if gerade player 2 starting to count with 1
-
-    public Gameboard() {
-        this.board = board;
-        this.playerTurn = playerTurn;
-    }
+    private final int[][] board = new int[ROWS][COLS];
+    private int playerTurn = 1;
 
     void printBoard(){ //gibt das aktuelle Spielbrett auf der Konsole aus.
         for(int i = 0; i < visualBoard.length;i++){
@@ -51,19 +47,21 @@ public class Gameboard {
         return value;
     }
 
-    void checkField(int row, int col){ //überprüft ob ein Player auf eine bestimmte Stelle (x,y) im Spielfeld setzen darf.
-        row = boardRowAndColConverter(row); //in gameloop when i save the value with a scanner 1 time
+    String checkField(int row, int col){ //überprüft ob ein Player auf eine bestimmte Stelle (x,y) im Spielfeld setzen darf.
+        String message = "True";
+        row = boardRowAndColConverter(row);
         col = boardRowAndColConverter(col);
 
         if (board[col][row] == NOUGHT || board[col][row] == CROSS) {
-            System.out.println("There is already a symbol placed");
+            return "There is already a symbol placed. Try again.";
+        } else if (board[col][row] >= 1 && board[col][row] <= 3) {
+            return "Please enter a valid number between 1 - 3";
         } else {
-            System.out.println("Please enter a valid number between 1 - 3");
+            return message;
         }
     }
 
-    void set(Player p, int row, int col){
-        //TODO setzt das entsprechende Zeichen des Spielers auf das Spielbrett.
+    void set(Player p, int row, int col){ //setzt das entsprechende Zeichen des Spielers auf das Spielbrett.
         row = boardRowAndColConverter(row);
         col = boardRowAndColConverter(col);
 
@@ -72,13 +70,74 @@ public class Gameboard {
         }
     }
 
-    boolean checkIfWon(Player p){
-        //TODO zum  Überprüfen  ob  der Spieler X oder O gewonnen hat.
-        return true;
+    boolean checkIfWon(Player p){ //TODO zum  Überprüfen  ob  der Spieler X oder O gewonnen hat.
+        int sym = p.getSymbol();
+
+        if (board[1][1] == sym && board[1][5] == sym && board[1][9] == sym){
+            return true;
+        } else if (board[5][1] == sym && board[5][5] == sym && board[5][9] == sym){
+            return true;
+        } else if (board[9][1] == sym && board[9][5] == sym && board[9][9] == sym){
+            return true;
+        } else if (board[1][1] == sym && board[5][1] == sym && board[9][1] == sym){
+            return true;
+        } else if (board[1][5] == sym && board[5][5] == sym && board[9][5] == sym){
+            return true;
+        } else if (board[1][9] == sym && board[5][9] == sym && board[9][9] == sym){
+            return true;
+        } else if (board[1][1] == sym && board[5][5] == sym && board[9][9] == sym){
+            return true;
+        } else if (board[9][1] == sym && board[5][5] == sym && board[1][9] == sym){
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    void reset(){
-        //TODO setzt alles wieder auf Anfang.
+    void reset(){  //TODO setzt alles wieder auf Anfang.
+        for(int i = 0; i < board.length;i++){
+            for(int j = 0; j < board.length;j++){
+                board[i][j] = EMPTY;
+            }
+        }
+    }
+
+    public boolean gameplay(Scanner scn, Player p, int scnRow, int scnCol) {
+        String scnReset;
+        if (scnRow >= 1 && scnRow <= 3 && scnCol >= 1 && scnCol <= 3) {
+            String field = checkField(scnRow, scnCol);
+            if (field.equals("True")) {
+                set(p, scnRow, scnCol);
+                printBoard();
+                setPlayerTurn(getPlayerTurn() + 1);
+                if (checkIfWon(p)) {
+                    System.out.println("p" + p.getSymbol() + " won!");
+                    p.setVictories(p.getVictories() + 1);
+                    System.out.println("Wanna play again? Type in y");
+                    scn.nextLine();
+                    scnReset = scn.nextLine();
+                    if (scnReset.equals("y")) {
+                        reset();
+                        printBoard();
+                    } else {
+                        //printLeaderboard(p1, p2);
+                        return true;
+                    }
+                }
+            } else {
+                System.out.println(field);
+            }
+        } else {
+            System.out.println("--!!!--Please enter a valid number between 1 - 3--!!!--");
+        }
+        return false;
+    }
+
+    void printLeaderboard(Player p1, Player p2){
+        System.out.println("++++++++++VICTORIES++++++++++");
+        System.out.println("Victories of p1: " + p1.getVictories());
+        System.out.println("Victories of p2: " + p2.getVictories());
+        System.out.println("+++++++++++++++++++++++++++++");
     }
 
     public int getPlayerTurn() {
