@@ -1,6 +1,5 @@
 package com.company;
 
-import java.sql.SQLOutput;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -45,27 +44,32 @@ public class GameLoop {
         }
 
         while (true) {
-            if (gameboard.getPlayerTurn() % 2 == 1) {
-                System.out.println("Player 1 enter the row and column you want to place your symbol:");
-                p = p1;
+            if (gameboard.getSymbolCounter() == 9){
+                System.out.println("Draw!");
+                gameboard.restartGameOrLeave(scn);
             } else {
-                System.out.println("Player 2 enter the row and column you want to place your symbol:");
-                p = p2;
-            }
+                if (gameboard.getPlayerTurn() % 2 == 1) {
+                    System.out.println("Player 1 enter the row and column you want to place your symbol:");
+                    p = p1;
+                } else {
+                    System.out.println("Player 2 enter the row and column you want to place your symbol:");
+                    p = p2;
+                }
 
-            try {
-                System.out.println("row:");
-                scnRow = scn.nextInt();
-                System.out.println("col:");
-                scnCol = scn.nextInt();
-            } catch (InputMismatchException e) {
-                scn.next();
-                System.out.println("Invalid input! Try again.");
-                continue;
-            }
-            if (gameboard.gameplay(scn, p, scnRow, scnCol)){
-                gameboard.printLeaderboard(p1,p2);
-                break;
+                try {
+                    System.out.println("row:");
+                    scnRow = scn.nextInt();
+                    System.out.println("col:");
+                    scnCol = scn.nextInt();
+                } catch (InputMismatchException e) {
+                    scn.next();
+                    System.out.println("Invalid input! Try again.");
+                    continue;
+                }
+                if (gameboard.gameplayWinOrLose(scn, p, scnRow, scnCol)){
+                    gameboard.printLeaderboard(p1,p2);
+                    break;
+                }
             }
         }
     }
